@@ -20,7 +20,6 @@ public class MainFrame extends JFrame {
     }
 
     private void initComponents() {
-        // Header panel for balance and + button
         JPanel headerPanel = new JPanel(new BorderLayout());
         balanceLabel = new JLabel("Balance: ₹0.00", SwingConstants.LEFT);
         balanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
@@ -37,22 +36,18 @@ public class MainFrame extends JFrame {
         });
         headerPanel.add(addButton, BorderLayout.EAST);
 
-        // Panel for displaying transactions
         transactionPanel = new JPanel();
         transactionPanel.setLayout(new BoxLayout(transactionPanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(transactionPanel);
 
-        // Add components to the frame
         add(headerPanel, BorderLayout.NORTH);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Load initial balance and transactions
         updateBalance();
         updateTransactionArea();
     }
 
     private void openAddTransactionDialog() {
-        // Create dialog window for adding a transaction
         JDialog dialog = new JDialog(this, "Add Transaction", true);
         dialog.setSize(300, 300);
         dialog.setLayout(new GridLayout(5, 2));
@@ -83,18 +78,17 @@ public class MainFrame extends JFrame {
                 String type = (String) typeCombo.getSelectedItem();
                 String category = categoryField.getText();
 
-                // Add the transaction through FinanceManager to generate the transaction number
                 financeManager.addTransaction(description, amount, type, category);
 
                 updateBalance();
                 updateTransactionArea();
 
-                dialog.dispose(); // Close dialog after saving
+                dialog.dispose();
             }
         });
         dialog.add(saveButton);
 
-        dialog.setLocationRelativeTo(this); // Center the dialog on the main frame
+        dialog.setLocationRelativeTo(this);
         dialog.setVisible(true);
     }
 
@@ -104,7 +98,7 @@ public class MainFrame extends JFrame {
     }
 
     private void updateTransactionArea() {
-        transactionPanel.removeAll(); // Clear previous transaction entries
+        transactionPanel.removeAll();
 
         Transaction[] transactions = financeManager.getTransactions();
         for (Transaction transaction : transactions) {
@@ -113,7 +107,6 @@ public class MainFrame extends JFrame {
             transactionEntry.setBackground(transaction.getType().equals("Income") ? new Color(204, 255, 204) : new Color(255, 204, 204));
             transactionEntry.setPreferredSize(new Dimension(350, 60));
 
-            // Transaction details
             String amountText = "₹" + String.format("%.2f", Math.abs(transaction.getAmount()));
             JLabel descriptionLabel = new JLabel("Transaction #" + transaction.getTransactionNumber() + ": " + transaction.getDescription() + " - " + amountText);
             JLabel detailsLabel = new JLabel(transaction.getCategory() + " (" + transaction.getType() + ")");
@@ -126,7 +119,7 @@ public class MainFrame extends JFrame {
             transactionPanel.add(transactionEntry);
         }
 
-        transactionPanel.revalidate(); // Refresh the panel
+        transactionPanel.revalidate();
         transactionPanel.repaint();
     }
 
