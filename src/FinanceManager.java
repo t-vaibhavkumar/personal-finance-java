@@ -1,18 +1,24 @@
+import java.util.ArrayList;
+
 public class FinanceManager {
     private Transaction[] transactions;
-    private int transactionCount; // Tracks the number of transactions added
-    private int nextTransactionNumber; // Unique transaction number generator
+    private int transactionCount;
+    private int nextTransactionNumber;
 
     public FinanceManager() {
-        transactions = new Transaction[1000]; // Fixed-size array for up to 1000 transactions
+        transactions = new Transaction[1000]; // Fixed-size array
         transactionCount = 0;
-        nextTransactionNumber = 1; // Start transaction numbers from 1
+        nextTransactionNumber = 1; // Start numbering transactions from 1
     }
 
-    // Adds a transaction, assigning a unique transaction number internally
     public void addTransaction(String description, double amount, String type, String category) {
         if (transactionCount < transactions.length) {
-            Transaction transaction = new Transaction(nextTransactionNumber, description, amount, type, category);
+            Transaction transaction;
+            if ("Income".equalsIgnoreCase(type)) {
+                transaction = new IncomeTransaction(nextTransactionNumber, description, amount, category);
+            } else {
+                transaction = new ExpenseTransaction(nextTransactionNumber, description, amount, category);
+            }
             transactions[transactionCount] = transaction;
             transactionCount++;
             nextTransactionNumber++;
@@ -24,13 +30,12 @@ public class FinanceManager {
     public double getBalance() {
         double balance = 0;
         for (int i = 0; i < transactionCount; i++) {
-            balance += transactions[i].getAmount();
+            balance += transactions[i].getAmount(); // Polymorphic call to getAmount()
         }
         return balance;
     }
 
     public Transaction[] getTransactions() {
-        // Return a trimmed array of current transactions only
         Transaction[] currentTransactions = new Transaction[transactionCount];
         System.arraycopy(transactions, 0, currentTransactions, 0, transactionCount);
         return currentTransactions;
